@@ -5,8 +5,8 @@ import java.util.Stack;
 
 public class Bug {
     private Node currentNode;
-    private Stack<Node> route;
-    private LinkedList<Node> forbiddenList;
+    private Stack<Node> route = new Stack<>();
+    private LinkedList<Node> forbiddenList = new LinkedList<>();
 
 
     public Bug(){
@@ -41,6 +41,8 @@ public class Bug {
         this.forbiddenList = forbiddenList;
     }
 
+    //Checker om den nuværende nodes pointers ikke er null eller den ikke er med id forbiddenList
+    //Returner så det tal som passer til den node der skal bevæges til
     public int checkNodePointers(){
         if((this.currentNode.getPointer1() != null) && !forbiddenList.contains(this.currentNode.getPointer1())){
             return 1;
@@ -53,31 +55,29 @@ public class Bug {
         }
     }
 
+    //Metoden som sender buggen et skridt tilbage ved at bruge Stack.pop()
     public void moveBack(){
         int i = 0;
         do{
             this.currentNode = route.pop();
+            System.out.println("I have moved back to:" + this.currentNode);
+            //Den tjekker så den nye nodes pointers.
             i = checkNodePointers();
-        }while((i != 1) || (i != 2) || (i !=3));
-        moveConfirmed(i);
+        //loopet bliver ved med kører indtil en pointer er ledig.
+        }while(i == 0);
+        System.out.println();
     }
 
-    public void moveConfirmed(int i){
-        if(i == 1){
-            this.currentNode = currentNode.getPointer1();
-        }else if(i == 2){
-            this.currentNode = currentNode.getPointer2();
-        }else if(i == 3){
-            this.currentNode = currentNode.getPointer3();
-        }else{
-            System.out.println("There is nowhere to go");
-        }
-    }
-
+    //Metode som bruger en switch til at bestemme hvilken node der skal rykkes til.
     public void moveForward(){
+        //checkNodePointer metoden returner en int i forhold til hvilken node der skal bevæges til
         switch (checkNodePointers()) {
+            //Hvis checkNodePointers returner 0 skal der bevæges baglens.
             case 0:
                 System.out.println("I have hit a dead end");
+                if(!forbiddenList.contains(currentNode)) {
+                    forbiddenList.add(currentNode);
+                }
                 moveBack();
                 break;
             case 1:
@@ -103,10 +103,20 @@ public class Bug {
                 break;
         }
     }
-
-    public void goThroughMaze(Node goal){
+    //Metoden som får bugen til at gå starte sin tur.
+    //Med målet parameteroverført.
+    public void goThroughMaze(Node goal) throws NullPointerException{
+        //Dette loop kører igennem indtil bugen har nået sit mål.
         while (this.currentNode != goal){
+            System.out.println(this.currentNode);
+            //Selve metoden der får buggen til at bevæge sig fremad.
+            //metoden er på linje 79
             moveForward();
         }
+        if(this.currentNode.getName().equals("Node 31")){
+            System.out.println(this.currentNode);
+            System.out.println("I have reached the goal!");
+        }
     }
+
 }

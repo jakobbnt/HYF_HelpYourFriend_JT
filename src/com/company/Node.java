@@ -55,4 +55,12 @@ public class Node {
     public void setPointer3(Node pointer3) {
         this.pointer3 = pointer3;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public String toString(){
+        return name;
+    }
 }
